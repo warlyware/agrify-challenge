@@ -2,7 +2,7 @@
 
 My solution for the coding challenge presented to me by agrify.com
 
-## Project setup
+### Installs deps
 ```
 yarn install
 ```
