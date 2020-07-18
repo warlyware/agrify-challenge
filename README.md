@@ -1,6 +1,6 @@
 # Agrify Challenge!
 
-My soltion for the coding challenge presented by agrify.com
+My solution for the coding challenge presented to me by agrify.com
 
 ## Project setup
 ```
