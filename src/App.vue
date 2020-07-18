@@ -1,20 +1,36 @@
 <template>
   <div id="app">
-    <div v-for="(constant, key) in constants" :key="key">
-      {{fields[key].label}}<br>
-      <input @input="update($event, key)"
-      :value="calculate(key)"
-      v-if="!fields[key].readOnly">
-      <div v-else>{{calculate(key)}}</div>
-    </div>
+    <h1>Time</h1>
+    <field v-for="(constant, key) in timeConstants" :key="key"
+    @update="ev => update(ev, key)" :value="calculate(key)"
+    :label="fields[key].label" :readOnly="fields[key].readOnly" />
+
+    <h1>Heat/Cooling</h1>
+    <field v-for="(constant, key) in heatCoolingConstants" :key="key"
+    @update="ev => update(ev, key)" :value="calculate(key)"
+    :label="fields[key].label" :readOnly="fields[key].readOnly" />
+
+    <h1>Weights and Measures</h1>
+    <field v-for="(constant, key) in weightsAndMeasuresConstants" :key="key"
+    @update="ev => update(ev, key)" :value="calculate(key)"
+    :label="fields[key].label" :readOnly="fields[key].readOnly" />
+
+    <h1>Staff Expense</h1>
+    <field v-for="(constant, key) in staffExpenseConstants" :key="key"
+    @update="ev => update(ev, key)" :value="calculate(key)"
+    :label="fields[key].label" :readOnly="fields[key].readOnly" />
   </div>
 </template>
 
 <script>
 import constants from './constants/constants.json'
+import Field from './components/Field.vue'
 
 export default {
   name: 'App',
+  components: {
+    Field
+  },
   data() {
     let mappedConstants = {}
     for (const [key, value] of Object.entries(constants.fields)) {
@@ -28,6 +44,40 @@ export default {
       ...mappedConstants,
       constants: mappedConstants,
       fields: constants.fields
+    }
+  },
+  computed: {
+    timeConstants() {
+      let constants = {}
+      Object.keys(this.constants).forEach(key => {
+        if (this.fields[key].category === 'Time')
+        constants[key] = this.constants[key]
+      })
+      return constants
+    },
+    heatCoolingConstants() {
+      let constants = {}
+      Object.keys(this.constants).forEach(key => {
+        if (this.fields[key].category === 'Heat/Cooling')
+        constants[key] = this.constants[key]
+      })
+      return constants
+    },
+    weightsAndMeasuresConstants() {
+      let constants = {}
+      Object.keys(this.constants).forEach(key => {
+        if (this.fields[key].category === 'Weights and Measures')
+        constants[key] = this.constants[key]
+      })
+      return constants
+    },
+    staffExpenseConstants() {
+      let constants = {}
+      Object.keys(this.constants).forEach(key => {
+        if (this.fields[key].category === 'Staff Expense')
+        constants[key] = this.constants[key]
+      })
+      return constants
     }
   },
   mounted() {
@@ -52,12 +102,20 @@ export default {
 </script>
 
 <style>
+.mb-4 {
+  margin-bottom: 1rem;
+}
+h1 {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+label {
+  color: grey;
+  font-size: 0.8rem;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
