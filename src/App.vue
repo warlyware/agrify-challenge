@@ -41,7 +41,6 @@ export default {
     filterConstantsByCategory(category) {
       let result = {}, fields = this.fields
       Object.keys(this.constants).forEach((key) => {
-        console.log({ cat: this.fields[key].cateogry, fields: this.fields, key })
         if (fields[key].category === category) { result[key] = this.constants[key] }
       })
       return result
