@@ -2,12 +2,12 @@
 
 My solution for the coding challenge presented to me by agrify.com
 
-### Installs deps
+### Install deps
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Compile and hot-reload for development
 ```
 yarn serve
 ```
