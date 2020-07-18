@@ -1,29 +1,8 @@
 <template>
   <div class="flex flex-wrap w-full font-avenir max-w-xl mx-auto">
-    <div class="w-1/4">
-      <h1 class="mx-4">Time</h1>
-      <field v-for="(constant, key) in timeConstants" :key="key" class="mx-4"
-      @update="ev => update(ev, key)" :value="calculate(key)" :fieldType="fields[key].type"
-      :label="fields[key].label" :readOnly="fields[key].readOnly" />
-    </div>
-
-    <div class="w-1/4">
-      <h1 class="mx-4">Heat/Cooling</h1>
-      <field v-for="(constant, key) in heatCoolingConstants" :key="key" class="mx-4"
-      @update="ev => update(ev, key)" :value="calculate(key)" :fieldType="fields[key].type"
-      :label="fields[key].label" :readOnly="fields[key].readOnly" />
-    </div>
-
-    <div class="w-1/4">
-      <h1 class="mx-4">Weights and Measures</h1>
-      <field v-for="(constant, key) in weightsAndMeasuresConstants" :key="key" class="mx-4"
-      @update="ev => update(ev, key)" :value="calculate(key)" :fieldType="fields[key].type"
-      :label="fields[key].label" :readOnly="fields[key].readOnly" />
-    </div>
-
-    <div class="w-1/4">
-      <h1 class="mx-4">Staff Expense</h1>
-      <field v-for="(constant, key) in staffExpenseConstants" :key="key" class="mx-4"
+    <div v-for="category in categories" :key="category" class="w-1/4">
+      <h1 class="mx-4">{{category}}</h1>
+      <field v-for="(constant, key) in filterConstantsByCategory(category)" :key="key" class="mx-4"
       @update="ev => update(ev, key)" :value="calculate(key)" :fieldType="fields[key].type"
       :label="fields[key].label" :readOnly="fields[key].readOnly" />
     </div>
@@ -40,48 +19,22 @@ export default {
     Field
   },
   data() {
-    let mappedConstants = {}
+    let mappedConstants = {}, categories = []
     for (const [key, value] of Object.entries(constants.fields)) {
       if (value.defaultValue >= 0) {
         mappedConstants[key] = value.defaultValue
       } else {
         mappedConstants[key] = value.calculate
       }
+      if (!categories.includes(value.category)) {
+        categories.push(value.category)
+      }
     }
     return {
       ...mappedConstants,
       constants: mappedConstants,
-      fields: constants.fields
-    }
-  },
-  computed: {
-    timeConstants() {
-      let constants = {}
-      Object.keys(this.constants).forEach(key => {
-        if (this.fields[key].category === 'Time') { constants[key] = this.constants[key] }
-      })
-      return constants
-    },
-    heatCoolingConstants() {
-      let constants = {}
-      Object.keys(this.constants).forEach(key => {
-        if (this.fields[key].category === 'Heat/Cooling') { constants[key] = this.constants[key] }
-      })
-      return constants
-    },
-    weightsAndMeasuresConstants() {
-      let constants = {}
-      Object.keys(this.constants).forEach(key => {
-        if (this.fields[key].category === 'Weights and Measures') { constants[key] = this.constants[key] }
-      })
-      return constants
-    },
-    staffExpenseConstants() {
-      let constants = {}
-      Object.keys(this.constants).forEach(key => {
-        if (this.fields[key].category === 'Staff Expense') { constants[key] = this.constants[key] }
-      })
-      return constants
+      fields: constants.fields,
+      categories
     }
   },
   mounted() {
@@ -93,10 +46,17 @@ export default {
     }
   },
   methods: {
+    filterConstantsByCategory(category) {
+      let result = {}, fields = this.fields
+      Object.keys(this.constants).forEach((key) => {
+        console.log({ cat: this.fields[key].cateogry, fields: this.fields, key })
+        if (fields[key].category === category) { result[key] = this.constants[key] }
+      })
+      return result
+    },
     update(ev, key) {
       this[key] = ev.target.value
       this.constants[key] = ev.target.value
-      this.$forceUpdate()
     },
     calculate(key) {
       return this.fields[key].calculate ? eval(this.fields[key].calculate) : this[key]
@@ -117,12 +77,6 @@ label { color: grey; font-size: 0.8rem; }
 .h-16 { height: 4rem; }
 .max-w-xl { max-width: 1000px; }
 .mx-auto { margin-right: auto; margin-left: auto; }
-@media only screen and (max-width: 768px) {
-  .w-1\/4 { width: 100%; }
-}
-@media (min-width: 768px) {
-  .w-1\/4 { width: 25%; }
-}
 .pb-1 { padding-bottom: 0.25rem; }
 .mx-4 { padding-left: 1rem; padding-right: 1rem; }
 .mb-2 { margin-bottom: 0.5rem; }
@@ -131,5 +85,11 @@ label { color: grey; font-size: 0.8rem; }
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+@media only screen and (max-width: 768px) {
+  .w-1\/4 { width: 100%; }
+}
+@media (min-width: 768px) {
+  .w-1\/4 { width: 25%; }
 }
 </style>
