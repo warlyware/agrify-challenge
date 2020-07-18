@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-16">
     <label>
       {{label}}
     </label><br>
@@ -19,7 +19,10 @@
 export default {
   props: ['read-only', 'label', 'value', 'field-type'],
   methods: {
-    round(value) { return +value.toFixed(2) }
+    round(value) {
+      if (this.fieldType === 'int') { return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }
+      return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
   }
 }
 </script>
